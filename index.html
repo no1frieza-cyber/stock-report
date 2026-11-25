@@ -7,10 +7,22 @@
 <style>
   * { box-sizing: border-box; }
   body { font-family: 'Malgun Gothic', -apple-system, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; padding: 16px; }
-  .container { max-width: 860px; margin: 0 auto; }
-  header { background: #1e293b; color: #fff; padding: 24px; border-radius: 14px; margin-bottom: 16px; }
+  .container { max-width: 900px; margin: 0 auto; }
+  header { background: #1e293b; color: #fff; padding: 22px 24px; border-radius: 14px; margin-bottom: 14px; }
   header h1 { margin: 0 0 6px; font-size: 22px; }
   header p { margin: 0; font-size: 13px; color: #cbd5e1; }
+  .ind-section { background: #fff; border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+  .ind-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+  .ind-title { font-size: 15px; font-weight: 700; color: #1e293b; }
+  .ind-time { font-size: 12px; color: #64748b; }
+  .ind-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 9px; }
+  .ind-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; }
+  .ind-label { font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 4px; }
+  .ind-value { font-size: 15px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ind-rate { font-size: 12px; font-weight: 700; margin-top: 3px; }
+  .ind-up { color: #dc2626; }
+  .ind-down { color: #2563eb; }
+  .ind-flat { color: #64748b; }
   .market-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
   .market-tab { border: 2px solid #cbd5e1; background: #fff; color: #334155; padding: 13px 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
   .market-tab:hover { border-color: #64748b; }
@@ -44,11 +56,88 @@
   <div class="container">
     <header>
       <h1>📊 한·미 증시 급등주 리포트</h1>
-      <p>순수 개별 종목 거래대금 상위 100위 중 10%↑ 상승 종목 · 최근 업데이트: 2026-11-26 07:22</p>
+      <p>순수 개별 종목 거래대금 상위 100위 중 10%↑ 상승 종목 · 최근 업데이트: 2026-11-26 07:52</p>
     </header>
+    
+    <section class="ind-section">
+      <div class="ind-header">
+        <span class="ind-title">🌐 주요 시장 지표</span>
+        <span class="ind-time">업데이트: 2026-11-26 07:52</span>
+      </div>
+      <div class="ind-grid">
+        
+            <div class="ind-card">
+              <div class="ind-label">코스피</div>
+              <div class="ind-value">4,697.51</div>
+              <div class="ind-rate ind-down">-6.16%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">코스닥</div>
+              <div class="ind-value">650.64</div>
+              <div class="ind-rate ind-down">-2.29%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">S&amp;P 500</div>
+              <div class="ind-value">7,182.78</div>
+              <div class="ind-rate ind-down">-0.25%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">나스닥</div>
+              <div class="ind-value">23,585.80</div>
+              <div class="ind-rate ind-down">-0.62%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">다우존스</div>
+              <div class="ind-value">50,182.95</div>
+              <div class="ind-rate ind-up">+0.33%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">원/달러</div>
+              <div class="ind-value">1,345.50원</div>
+              <div class="ind-rate ind-up">+0.22%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">미 국채 10년</div>
+              <div class="ind-value">4.8640%</div>
+              <div class="ind-rate ind-down">-0.78%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">국내 금</div>
+              <div class="ind-value">152,200원/g</div>
+              <div class="ind-rate ind-down">-2.91%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">WTI 유가</div>
+              <div class="ind-value">$84.15</div>
+              <div class="ind-rate ind-up">+2.56%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">VIX</div>
+              <div class="ind-value">28.29</div>
+              <div class="ind-rate ind-up">+7.32%</div>
+            </div>
+            
+            <div class="ind-card">
+              <div class="ind-label">비트코인</div>
+              <div class="ind-value">81,677,000원</div>
+              <div class="ind-rate ind-up">+0.29%</div>
+            </div>
+            
+      </div>
+    </section>
+    
     <div class="market-tabs">
       <button class="market-tab active" data-tab="kr">🇰🇷 국내 증시 (8)</button>
-      <button class="market-tab" data-tab="us">🇺🇸 미국 증시 (4)</button>
+      <button class="market-tab" data-tab="us">🇺🇸 미국 증시 (5)</button>
     </div>
     <div id="panel-kr" class="market-panel">
       
@@ -148,10 +237,10 @@
     </div>
     <div id="panel-us" class="market-panel" style="display:none;">
       
-    <a class="latest-banner latest-us" href="reports/20261126_0721_US.html">
+    <a class="latest-banner latest-us" href="reports/20261126_0752_US.html">
       <div>
         <div class="latest-tag">가장 최근 리포트</div>
-        <div class="latest-title">🇺🇸 2026-11-26 07:21 (US) 급등주 바로 보기</div>
+        <div class="latest-title">🇺🇸 2026-11-26 07:52 (US) 급등주 바로 보기</div>
       </div>
       <span class="latest-arrow">→</span>
     </a>
@@ -159,6 +248,15 @@
             <section class="date-group">
               <h2 class="date-title">📅 2026-11-26</h2>
               <div class="card-grid">
+                
+                <a class="report-card" data-mode="US" href="reports/20261126_0752_US.html">
+                  <div class="card-left">
+                    <span class="badge badge-us">US</span>
+                    <span class="card-time">07:52</span>
+                    <span class="card-session">미국 정규장 마감</span>
+                  </div>
+                  <span class="card-arrow">열기 →</span>
+                </a>
                 
                 <a class="report-card" data-mode="US" href="reports/20261126_0721_US.html">
                   <div class="card-left">
