@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>한국 증시 급등주 리포트 (KRX / NXT)</title>
+<title>증시 급등주 리포트 (국내 / 미국)</title>
 <style>
   * { box-sizing: border-box; }
   body { font-family: 'Malgun Gothic', -apple-system, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; padding: 16px; }
@@ -11,7 +11,12 @@
   header { background: #1e293b; color: #fff; padding: 24px; border-radius: 14px; margin-bottom: 16px; }
   header h1 { margin: 0 0 6px; font-size: 22px; }
   header p { margin: 0; font-size: 13px; color: #cbd5e1; }
+  .market-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .market-tab { border: 2px solid #cbd5e1; background: #fff; color: #334155; padding: 13px 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .market-tab:hover { border-color: #64748b; }
+  .market-tab.active { background: #0f172a; color: #fff; border-color: #0f172a; box-shadow: 0 3px 10px rgba(15,23,42,0.18); }
   .latest-banner { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; text-decoration: none; padding: 18px 20px; border-radius: 14px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(37,99,235,0.22); }
+  .latest-banner.latest-us { background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 4px 12px rgba(5,150,105,0.22); }
   .latest-banner:hover { filter: brightness(1.05); }
   .latest-tag { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
   .latest-title { font-size: 17px; font-weight: 700; }
@@ -28,33 +33,39 @@
   .badge { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 6px; }
   .badge-krx { background: #fee2e2; color: #b91c1c; }
   .badge-nxt { background: #dbeafe; color: #1d4ed8; }
+  .badge-us { background: #dcfce7; color: #15803d; }
   .card-time { font-size: 15px; font-weight: 700; }
   .card-session { font-size: 13px; color: #64748b; }
   .card-arrow { font-size: 13px; color: #2563eb; font-weight: 600; }
-  .empty { text-align: center; color: #64748b; padding: 40px 0; }
+  .empty { text-align: center; color: #64748b; padding: 48px 0; background: #fff; border-radius: 14px; }
 </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>📊 한국 증시 급등주 리포트</h1>
-      <p>순수 개별 종목 거래대금 상위 100위 중 10%↑ 상승 종목 · 총 6개 리포트 · 최근 업데이트: 2026-11-25 16:44</p>
+      <h1>📊 한·미 증시 급등주 리포트</h1>
+      <p>순수 개별 종목 거래대금 상위 100위 중 10%↑ 상승 종목 · 최근 업데이트: 2026-11-25 18:01</p>
     </header>
-    
-        <a class="latest-banner" href="reports/20261125_1643_KRX.html">
-          <div>
-            <div class="latest-tag">가장 최근 리포트</div>
-            <div class="latest-title">📈 2026-11-25 16:43 (KRX) 급등주 바로 보기</div>
-          </div>
-          <span class="latest-arrow">→</span>
-        </a>
-        
-    <div class="filters">
-      <button class="filter-btn active" data-filter="ALL">전체</button>
-      <button class="filter-btn" data-filter="KRX">KRX 정규장</button>
-      <button class="filter-btn" data-filter="NXT">NXT 프리·애프터</button>
+    <div class="market-tabs">
+      <button class="market-tab active" data-tab="kr">🇰🇷 국내 증시 (6)</button>
+      <button class="market-tab" data-tab="us">🇺🇸 미국 증시 (1)</button>
     </div>
+    <div id="panel-kr" class="market-panel">
+      
+    <a class="latest-banner" href="reports/20261125_1643_KRX.html">
+      <div>
+        <div class="latest-tag">가장 최근 리포트</div>
+        <div class="latest-title">📈 2026-11-25 16:43 (KRX) 급등주 바로 보기</div>
+      </div>
+      <span class="latest-arrow">→</span>
+    </a>
     
+        <div class="filters">
+          <button class="filter-btn active" data-filter="ALL">전체</button>
+          <button class="filter-btn" data-filter="KRX">KRX 정규장</button>
+          <button class="filter-btn" data-filter="NXT">NXT 프리·애프터</button>
+        </div>
+        
             <section class="date-group">
               <h2 class="date-title">📅 2026-11-25</h2>
               <div class="card-grid">
@@ -116,31 +127,86 @@
               </div>
             </section>
             
+    </div>
+    <div id="panel-us" class="market-panel" style="display:none;">
+      
+    <a class="latest-banner latest-us" href="reports/20261125_1801_US.html">
+      <div>
+        <div class="latest-tag">가장 최근 리포트</div>
+        <div class="latest-title">🇺🇸 2026-11-25 18:01 (US) 급등주 바로 보기</div>
+      </div>
+      <span class="latest-arrow">→</span>
+    </a>
+    
+            <section class="date-group">
+              <h2 class="date-title">📅 2026-11-25</h2>
+              <div class="card-grid">
+                
+                <a class="report-card" data-mode="US" href="reports/20261125_1801_US.html">
+                  <div class="card-left">
+                    <span class="badge badge-us">US</span>
+                    <span class="card-time">18:01</span>
+                    <span class="card-session">미국 정규장 마감</span>
+                  </div>
+                  <span class="card-arrow">열기 →</span>
+                </a>
+                
+              </div>
+            </section>
+            
+    </div>
   </div>
   
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll(".filter-btn");
-  const groups = document.querySelectorAll(".date-group");
+  const tabBtns = document.querySelectorAll(".market-tab");
+  const panels = document.querySelectorAll(".market-panel");
 
-  buttons.forEach((btn) => {
+  function activateTab(tabName) {
+    tabBtns.forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === tabName));
+    panels.forEach((panel) => {
+      panel.style.display = panel.id === "panel-" + tabName ? "block" : "none";
+    });
+  }
+
+  tabBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const filter = btn.dataset.filter;
-      buttons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      groups.forEach((group) => {
-        const cards = group.querySelectorAll(".report-card");
-        let visibleCount = 0;
-        cards.forEach((card) => {
-          const show = filter === "ALL" || card.dataset.mode === filter;
-          card.style.display = show ? "flex" : "none";
-          if (show) visibleCount++;
-        });
-        group.style.display = visibleCount > 0 ? "block" : "none";
-      });
+      const target = btn.dataset.tab;
+      activateTab(target);
+      history.replaceState(null, "", target === "us" ? "#us" : "#kr");
     });
   });
+
+  if (window.location.hash === "#us") {
+    activateTab("us");
+  } else {
+    activateTab("kr");
+  }
+
+  const krPanel = document.getElementById("panel-kr");
+  if (krPanel) {
+    const buttons = krPanel.querySelectorAll(".filter-btn");
+    const groups = krPanel.querySelectorAll(".date-group");
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        groups.forEach((group) => {
+          const cards = group.querySelectorAll(".report-card");
+          let visibleCount = 0;
+          cards.forEach((card) => {
+            const show = filter === "ALL" || card.dataset.mode === filter;
+            card.style.display = show ? "flex" : "none";
+            if (show) visibleCount++;
+          });
+          group.style.display = visibleCount > 0 ? "block" : "none";
+        });
+      });
+    });
+  }
 });
 </script>
 
