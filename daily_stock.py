@@ -1221,7 +1221,7 @@ def main():
         if mode == "NXT" and now.hour < 9 and not is_manual and not is_open:
             print(f"[{today}] NXT 프리마켓 미개장(휴장일)입니다.")
             return
-        if traded_date and traded_date != today:
+        if not is_manual and traded_date and traded_date != today:
             print(f"[{today}] 휴장일입니다. (최근 거래일: {traded_date})")
             return
 
