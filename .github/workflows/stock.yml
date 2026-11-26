@@ -2,12 +2,12 @@ name: Daily Stock Report
 
 on:
   schedule:
-    # GitHub Actions는 UTC 기준(한국시간 -9시간)으로 동작합니다.
-    - cron: '0 22 * * 1-5'    # 화~토 07:00 KST (미국 US)
-    - cron: '30 23 * * 0-4'   # 월~금 08:30 KST (국내 NXT 프리)
-    - cron: '30 0 * * 1-5'    # 월~금 09:30 KST (국내 KRX 초반)
-    - cron: '0 6 * * 1-5'     # 월~금 15:00 KST (국내 KRX 마감 전)
-    - cron: '30 10 * * 1-5'   # 월~금 19:30 KST (국내 NXT 애프터)
+    # 정각(00분)·30분 혼잡을 피해 3~5분 비켜서 설정 (UTC 기준)
+    - cron: '5 22 * * 1-5'    # 화~토 07:05 KST (미국 US)
+    - cron: '33 23 * * 0-4'   # 월~금 08:33 KST (국내 NXT 프리)
+    - cron: '33 0 * * 1-5'    # 월~금 09:33 KST (국내 KRX 초반)
+    - cron: '3 6 * * 1-5'     # 월~금 15:03 KST (국내 KRX 마감 전)
+    - cron: '33 10 * * 1-5'   # 월~금 19:33 KST (국내 NXT 애프터)9:30 KST (국내 NXT 애프터)
   workflow_dispatch:
     inputs:
       mode:
