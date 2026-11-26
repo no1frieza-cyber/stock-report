@@ -7,7 +7,7 @@ on:
     - cron: '33 23 * * 0-4'   # 월~금 08:33 KST (국내 NXT 프리)
     - cron: '33 0 * * 1-5'    # 월~금 09:33 KST (국내 KRX 초반)
     - cron: '3 6 * * 1-5'     # 월~금 15:03 KST (국내 KRX 마감 전)
-    - cron: '33 10 * * 1-5'   # 월~금 19:33 KST (국내 NXT 애프터)9:30 KST (국내 NXT 애프터)
+    - cron: '33 10 * * 1-5'   # 월~금 19:33 KST (국내 NXT 애프터)
   workflow_dispatch:
     inputs:
       mode:
