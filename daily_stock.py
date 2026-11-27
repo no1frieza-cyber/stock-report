@@ -165,6 +165,16 @@ document.addEventListener("DOMContentLoaded", () => {
     activateTab("kr");
   }
 
+  // 오늘 날짜만 펼치고 하루 이상 지난 날짜는 자동 접기
+  const now = new Date();
+  const todayKey =
+    now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    String(now.getDate()).padStart(2, "0");
+  document.querySelectorAll("details.date-group[data-date]").forEach((group) => {
+    group.open = group.dataset.date >= todayKey;
+  });
+
   const krPanel = document.getElementById("panel-kr");
   if (krPanel) {
     const buttons = krPanel.querySelectorAll(".filter-btn");
@@ -184,6 +194,8 @@ document.addEventListener("DOMContentLoaded", () => {
             card.style.display = show ? "flex" : "none";
             if (show) visibleCount++;
           });
+          const countEl = group.querySelector(".date-count");
+          if (countEl) countEl.textContent = `(${visibleCount}건)`;
           group.style.display = visibleCount > 0 ? "block" : "none";
         });
       });
@@ -944,9 +956,11 @@ def render_market_section(items, is_us=False):
     for item in items:
         grouped[item["date"]].append(item)
 
+    today_str = datetime.now().strftime("%Y%m%d")
     groups_html = []
     for date_key in sorted(grouped.keys(), reverse=True):
         fmt_date = f"{date_key[:4]}-{date_key[4:6]}-{date_key[6:]}"
+        open_attr = " open" if date_key >= today_str else ""
         cards = []
         for item in grouped[date_key]:
             t = item["time"]
@@ -976,12 +990,15 @@ def render_market_section(items, is_us=False):
             )
         groups_html.append(
             f"""
-            <section class="date-group">
-              <h2 class="date-title">📅 {fmt_date}</h2>
+            <details class="date-group" data-date="{date_key}"{open_attr}>
+              <summary class="date-title">
+                <span>📅 {fmt_date} <span class="date-count">({len(cards)}건)</span></span>
+                <span class="date-toggle"></span>
+              </summary>
               <div class="card-grid">
                 {''.join(cards)}
               </div>
-            </section>
+            </details>
             """
         )
 
@@ -1061,8 +1078,14 @@ def build_index_html(report_filenames, indicators=None):
   .filters {{ display: flex; gap: 8px; margin-bottom: 18px; }}
   .filter-btn {{ border: 1px solid #cbd5e1; background: #fff; color: #334155; padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }}
   .filter-btn.active {{ background: #0f172a; color: #fff; border-color: #0f172a; }}
-  .date-group {{ background: #fff; border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }}
-  .date-title {{ font-size: 16px; margin: 0 0 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }}
+  .date-group {{ background: #fff; border-radius: 14px; padding: 16px 20px; margin-bottom: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }}
+  .date-title {{ font-size: 16px; font-weight: 700; margin: 0; color: #1e293b; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }}
+  .date-title::-webkit-details-marker {{ display: none; }}
+  .date-count {{ font-size: 13px; font-weight: 500; color: #64748b; margin-left: 6px; }}
+  .date-toggle {{ font-size: 12px; color: #64748b; font-weight: 600; }}
+  .date-group[open] .date-title {{ border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 12px; }}
+  .date-group[open] .date-toggle::after {{ content: "접기 ▲"; }}
+  .date-group:not([open]) .date-toggle::after {{ content: "펼치기 ▼"; }}
   .card-grid {{ display: flex; flex-direction: column; gap: 8px; }}
   .report-card {{ display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 10px; text-decoration: none; color: #0f172a; transition: background 0.15s; }}
   .report-card:hover {{ background: #f8fafc; border-color: #94a3b8; }}
