@@ -189,6 +189,98 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  // ===== 수동 갱신 버튼 (GitHub Actions workflow_dispatch) =====
+  const TOKEN_KEY = "stock_report_gh_token";
+  const controls = document.getElementById("refreshControls");
+  const modeSelect = document.getElementById("modeSelect");
+  const refreshBtn = document.getElementById("refreshBtn");
+  const tokenBtn = document.getElementById("tokenBtn");
+  const statusEl = document.getElementById("refreshStatus");
+
+  function askToken() {
+    const current = localStorage.getItem(TOKEN_KEY) || "";
+    const input = prompt(
+      "GitHub 토큰(github_pat_...)을 입력하세요.\n(이 기기 브라우저에만 저장되며 외부로 노출되지 않습니다. 삭제하려면 빈 칸으로 확인)",
+      current
+    );
+    if (input === null) return null;
+    const trimmed = input.trim();
+    if (trimmed) {
+      localStorage.setItem(TOKEN_KEY, trimmed);
+      statusEl.textContent = "🔑 토큰이 이 브라우저에 저장되었습니다.";
+      return trimmed;
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+      statusEl.textContent = "🗑️ 저장된 토큰이 삭제되었습니다.";
+      return "";
+    }
+  }
+
+  if (tokenBtn) {
+    tokenBtn.addEventListener("click", askToken);
+  }
+
+  if (refreshBtn && controls) {
+    refreshBtn.addEventListener("click", async () => {
+      let token = localStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        token = askToken();
+        if (!token) return;
+      }
+
+      const repo = controls.dataset.repo;
+      const prevUpdated = controls.dataset.updated;
+      const mode = modeSelect ? modeSelect.value : "auto";
+
+      refreshBtn.disabled = true;
+      statusEl.textContent = `⏳ [${mode.toUpperCase()}] 리포트 갱신을 요청하는 중...`;
+
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${repo}/actions/workflows/stock.yml/dispatches`,
+          {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Accept": "application/vnd.github+json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ref: "main", inputs: { mode: mode } }),
+          }
+        );
+
+        if (res.status === 401 || res.status === 403) {
+          throw new Error("토큰 인증 실패 — 🔑 버튼을 눌러 토큰과 Actions(Read and write) 권한을 확인하세요.");
+        }
+        if (!res.ok) {
+          throw new Error(`요청 실패 (HTTP ${res.status})`);
+        }
+
+        statusEl.textContent = "✅ 갱신 시작됨! 리포트 생성 및 배포 중 (약 50~90초 소요)...";
+
+        for (let i = 0; i < 25; i++) {
+          await new Promise((r) => setTimeout(r, 6000));
+          const pageRes = await fetch(window.location.pathname + "?t=" + Date.now(), {
+            cache: "no-store",
+          });
+          if (pageRes.ok) {
+            const text = await pageRes.text();
+            const m = text.match(/data-updated="([^"]+)"/);
+            if (m && m[1] !== prevUpdated) {
+              statusEl.textContent = "🎉 최신 리포트 반영 완료! 화면을 새로고침합니다...";
+              setTimeout(() => window.location.reload(), 600);
+              return;
+            }
+          }
+        }
+        statusEl.textContent = "⚠️ 텔레그램 알림을 확인하거나 잠시 후 직접 새로고침해 주세요.";
+      } catch (e) {
+        statusEl.textContent = "❌ 오류: " + e.message;
+      }
+      refreshBtn.disabled = false;
+    });
+  }
 });
 </script>
 """
@@ -897,7 +989,7 @@ def render_market_section(items, is_us=False):
 
 
 def build_index_html(report_filenames, indicators=None):
-    """11개 주요 시장 지표 + 국내(KRX/NXT)/미국(US) 분리형 메인 대시보드(index.html) 생성"""
+    """10개 주요 시장 지표 + 수동 갱신 버튼 + 국내/미국 분리형 메인 대시보드(index.html) 생성"""
     kr_items = []
     us_items = []
 
@@ -917,7 +1009,7 @@ def build_index_html(report_filenames, indicators=None):
     kr_items.sort(key=lambda x: (x["date"], x["time"]), reverse=True)
     us_items.sort(key=lambda x: (x["date"], x["time"]), reverse=True)
 
-    updated_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+    updated_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     indicators_html = render_indicators_section(indicators or [], updated_str)
     kr_section = render_market_section(kr_items, is_us=False)
     us_section = render_market_section(us_items, is_us=True)
@@ -932,9 +1024,18 @@ def build_index_html(report_filenames, indicators=None):
   * {{ box-sizing: border-box; }}
   body {{ font-family: 'Malgun Gothic', -apple-system, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; padding: 16px; }}
   .container {{ max-width: 900px; margin: 0 auto; }}
-  header {{ background: #1e293b; color: #fff; padding: 22px 24px; border-radius: 14px; margin-bottom: 14px; }}
+  header {{ background: #1e293b; color: #fff; padding: 20px 22px; border-radius: 14px; margin-bottom: 14px; }}
+  .header-top {{ display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }}
   header h1 {{ margin: 0 0 6px; font-size: 22px; }}
   header p {{ margin: 0; font-size: 13px; color: #cbd5e1; }}
+  .refresh-bar {{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }}
+  .mode-select {{ background: #0f172a; color: #f8fafc; border: 1px solid #475569; border-radius: 8px; padding: 8px 10px; font-size: 13px; font-weight: 600; }}
+  .refresh-btn {{ background: #2563eb; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }}
+  .refresh-btn:hover {{ background: #1d4ed8; }}
+  .refresh-btn:disabled {{ background: #475569; cursor: not-allowed; }}
+  .token-btn {{ background: #334155; color: #fff; border: 1px solid #475569; padding: 8px 10px; border-radius: 8px; font-size: 13px; cursor: pointer; }}
+  .token-btn:hover {{ background: #475569; }}
+  .refresh-status {{ margin-top: 10px; font-size: 12.5px; color: #38bdf8; min-height: 16px; }}
   .ind-section {{ background: #fff; border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }}
   .ind-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }}
   .ind-title {{ font-size: 15px; font-weight: 700; color: #1e293b; }}
@@ -979,8 +1080,23 @@ def build_index_html(report_filenames, indicators=None):
 <body>
   <div class="container">
     <header>
-      <h1>📊 한·미 증시 급등주 리포트</h1>
-      <p>순수 개별 종목 거래대금 상위 100위 중 10%↑ 상승 종목 · 최근 업데이트: {updated_str}</p>
+      <div class="header-top">
+        <div>
+          <h1>📊 한·미 증시 급등주 리포트</h1>
+          <p>순수 개별 종목 거래대금 상위 100위 중 10%↑ 상승 종목 · 최근 업데이트: {updated_str}</p>
+        </div>
+        <div class="refresh-bar" id="refreshControls" data-repo="{GITHUB_USER}/{GITHUB_REPO}" data-updated="{updated_str}">
+          <select id="modeSelect" class="mode-select">
+            <option value="krx">KRX 정규장</option>
+            <option value="nxt">NXT 프리·애프터</option>
+            <option value="us">US 미국 증시</option>
+            <option value="auto">자동(현재 시각)</option>
+          </select>
+          <button id="refreshBtn" class="refresh-btn" type="button">🔄 리포트 갱신</button>
+          <button id="tokenBtn" class="token-btn" type="button" title="GitHub 토큰 설정/변경">🔑</button>
+        </div>
+      </div>
+      <div id="refreshStatus" class="refresh-status"></div>
     </header>
     {indicators_html}
     <div class="market-tabs">
